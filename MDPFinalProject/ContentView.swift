@@ -6,13 +6,7 @@
 //
 
 import SwiftUI
-extension Color {
-    static let ui = Color.UI()
-    
-    struct UI {
-         let Primary = Color("Primary")
-    }
-}
+
 //JSON STRUCTURES
 //GeoCode Info
 struct geoInfo: Decodable{
@@ -48,6 +42,7 @@ struct sysData: Decodable{
 }
 
 struct ContentView: View {
+    //State Variables
     @State private var Location = ""
     @State private var CurrentLocation = "Adress: "
     
@@ -82,12 +77,6 @@ struct ContentView: View {
                 .background(weatherColor)
                 
                 ZStack{
-                    /*
-                    Rectangle()
-                        .fill(.white)
-                        .border(.black, width:2)
-                        .frame(width: 600, height: 200)
-                     */
                     VStack{
                         Text(Location)
                             .font(.title2)
@@ -143,10 +132,12 @@ struct ContentView: View {
                
 
                 Spacer()
+                Image(weatherIcon)
+                    .resizable()
             }//End Vstack
             .padding()
        
-    }
+    }//End Body
    
     func kelvinToFahrenheit(input: Double)-> Double{
         return 1.8*(input-273)+32
@@ -163,25 +154,25 @@ struct ContentView: View {
         }
         do{
             let (data, _) = try await URLSession.shared.data(from: url)
-            
+               
             let output: currentWeatherData = try JSONDecoder().decode(currentWeatherData.self,from: data)
-            
-            currentWeatherString = output.weather[0].main
-            //temp is by default in kelvin
-            let tempInKelvin = output.main.temp
-            tempInFahrenheit = String(kelvinToFahrenheit(input: tempInKelvin))
-            weatherIcon = findWeatherIcon(weatherIconNum: output.weather[0].icon)
-            
-            feelsLike = String(kelvinToFahrenheit(input: output.main.feels_like))
-            
-            tempMin = kelvinToFahrenheit(input: output.main.temp_min)
-            tempMax = kelvinToFahrenheit(input: output.main.temp_max)
-            
-            let sunriseTime = Date(timeIntervalSince1970: TimeInterval(output.sys.sunrise ))
-            let sunsetTime = Date(timeIntervalSince1970: TimeInterval(output.sys.sunset ))
-            
-            Sunrise = sunriseTime.formatted()
-            Sunset = sunsetTime.formatted()
+               
+               currentWeatherString = output.weather[0].main
+               //temp is by default in kelvin
+               let tempInKelvin = output.main.temp
+               tempInFahrenheit = String(kelvinToFahrenheit(input: tempInKelvin))
+               weatherIcon = findWeatherIcon(weatherIconNum: output.weather[0].icon)
+               
+               feelsLike = String(kelvinToFahrenheit(input: output.main.feels_like))
+               
+               tempMin = kelvinToFahrenheit(input: output.main.temp_min)
+               tempMax = kelvinToFahrenheit(input: output.main.temp_max)
+               
+               let sunriseTime = Date(timeIntervalSince1970: TimeInterval(output.sys.sunrise ))
+               let sunsetTime = Date(timeIntervalSince1970: TimeInterval(output.sys.sunset ))
+               
+               Sunrise = sunriseTime.formatted()
+               Sunset = sunsetTime.formatted()
 
             
         }catch{
@@ -209,8 +200,9 @@ struct ContentView: View {
             weatherColor = Color(red: 151/255, green: 154/255, blue: 163/255)
             return "cloud"
         }else if(weatherIconNum == "04d" || weatherIconNum == "04n"){
-            weatherColor = Color(red: 97/255, green: 98/255, blue: 102/255)
-            return "smoke"
+            //weatherColor = Color(red: 97/255, green: 98/255, blue: 102/255)
+            weatherColor = Color(red: 242/255, green: 206/255, blue: 48/255)
+            return "cloud.sun"
         }else if(weatherIconNum == "09d" || weatherIconNum == "09n"){
             weatherColor = Color(red: 129/225, green: 145/225, blue: 209/225)
             return "cloud.drizzle"
